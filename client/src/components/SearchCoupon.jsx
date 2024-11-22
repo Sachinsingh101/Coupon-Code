@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
@@ -65,7 +65,7 @@ const SearchCoupon = () => {
     <>
       <Grid
         container
-        m={2}
+        mt={10}
         sx={{ justifyContent: "center", alignItems: "center" }}
       >
         <Grid item xs={8}>

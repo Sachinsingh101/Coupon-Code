@@ -4,10 +4,15 @@ import Grid from "@mui/material/Grid";
 import Stack from "@mui/material/Stack";
 import { Divider } from "@mui/material";
 import Box from '@mui/material/Box';
+import { useRef, useEffect} from 'react';
 function TrendingCoupon() {
+  const filterRef = useRef();
+  useEffect(()=>{
+     filterRef.current.classList.add("navanimes");
+  },[])
   return (
     <>
-      <Grid container sx={{ justifyContent: "center" }}>
+      <Grid ref={filterRef} container mt={3} sx={{ justifyContent: "center" }}>
         <Grid item xs={8}>
           <Stack direction="row" spacing={2}>
             <Typography className="trending">
@@ -18,7 +23,7 @@ function TrendingCoupon() {
             <Typography className="trending">Low Budget</Typography>
             <Typography className="trending">Newly Added</Typography>
           </Stack>
-          <Divider sx={{marginTop:'5px'}} />
+            {/* <Divider sx={{marginTop:'5px'}} /> */}
         </Grid>
       </Grid>
     </>

@@ -1,21 +1,31 @@
-
-import Header from './components/Header.jsx'
-import Box from '@mui/material/Box'
-import  Container  from '@mui/material/Container';
-import Brands from './components/Brands.jsx'
-import TrendingCoupon from './components/TrendingCoupon.jsx';
-import Coupons from './components/Coupons.jsx';
-function App(){
+import Header from "./components/Header.jsx";
+import Bottom from "./components/Bottom.jsx";
+import Home from './components/Home.jsx';
+import Notfound from './components/Notfound.jsx'
+import { BrowserRouter, Routes, Route, Router } from "react-router-dom";
+import NotFound from "./components/Notfound.jsx";
+import Sellcoupons from "./components/Sellcoupons.jsx";
+import Account from './components/Account.jsx';
+import Signup from "./components/Signup.jsx";
+import Login from "./components/Signin.jsx";
+function App() {
   return (
     <>
-
-        <Header />
-        <Brands />
-        <TrendingCoupon />
-        <Coupons />
-
+      <Header />
+        <Routes>
+          <Route path="/">
+            <Route index element={<Home />} />
+            <Route path="home" element={<Home />} />
+            <Route path="Sell" element={<Sellcoupons />} />
+            <Route path="Account" element={<Account />} />
+            <Route path="Signup" element={<Signup />} />
+            <Route path="Signin" element={<Login />} />
+           </Route>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      <Bottom />
     </>
-  )
+  );
 }
 
 export default App;
