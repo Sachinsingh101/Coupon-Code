@@ -1,21 +1,15 @@
+import React from 'react';
+import {  Routes, Route } from 'react-router-dom';
+import Signin from './components/Signin.jsx';
+import Signup from './components/Signup.jsx';
 
-import Header from './components/Header.jsx'
-import Box from '@mui/material/Box'
-import  Container  from '@mui/material/Container';
-import Brands from './components/Brands.jsx'
-import TrendingCoupon from './components/TrendingCoupon.jsx';
-import Coupons from './components/Coupons.jsx';
-function App(){
+function App() {
   return (
-    <>
-
-        <Header />
-        <Brands />
-        <TrendingCoupon />
-        <Coupons />
-
-    </>
-  )
+      <Routes>
+        <Route path="/login" element={<Signin />} />
+        <Route path="/signup" element={<Signup />} />
+      </Routes>
+  );
 }
 
 export default App;
