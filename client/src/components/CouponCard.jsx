@@ -12,8 +12,12 @@ import { IconButton } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import { useRef} from 'react';
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import useAddToCart from './CustomHooks/useAddToCart.js';
 
 export default function CouponCard() {
+
+  
+
   return (
     <>
       <Paper className="card" elevation={5}>
@@ -41,7 +45,7 @@ export default function CouponCard() {
           </CardContent>
           <CardActions sx={{ display: "flex", justifyContent: "space-around" }}>
             <IconButton>
-              <AddShoppingCartIcon />
+              <AddShoppingCartIcon onClick={()=>useAddToCart("Play Store","Google Developer Coupon")}  />
             </IconButton>
             <Button variant="outlined" size="small">
               Shop Now

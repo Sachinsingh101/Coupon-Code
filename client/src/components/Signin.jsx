@@ -1,8 +1,52 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { TextField, Button, Typography, Box, Paper, Divider } from "@mui/material";
+import OAuth from "./OAuth";
 
 const Login = () => {
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrorMessage(null);
+
+    if (!formData.email || !formData.password) {
+      return setErrorMessage("Please fill in all fields.");
+    }
+
+    try {
+      setLoading(true);
+      const res = await fetch("http://localhost:3000/api/user/signin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setLoading(false);
+        return setErrorMessage(data.message || "Login failed.");
+      }
+
+      // Save token to localStorage (or other preferred storage)
+      localStorage.setItem("token", data.token);
+
+      // Redirect to dashboard or homepage
+      navigate("/home");
+    } catch (error) {
+      setLoading(false);
+      setErrorMessage("An error occurred. Please try again.");
+    }
+  };
+
   return (
     <Box
       mt={5}
@@ -38,15 +82,31 @@ const Login = () => {
         >
           LOGIN
         </Typography>
-        <Box component="form" noValidate autoComplete="off">
+        {errorMessage && (
+          <Typography
+            variant="body2"
+            color="error"
+            align="center"
+            sx={{ mb: 2 }}
+          >
+            {errorMessage}
+          </Typography>
+        )}
+        <Box component="form" onSubmit={handleSubmit} noValidate autoComplete="off">
           <Box mb={2}>
-            <Typography variant="body1" fontWeight="bold" sx={{ color: "#fff", mb: 1 }}>
+            <Typography
+              variant="body1"
+              fontWeight="bold"
+              sx={{ color: "#fff", mb: 1 }}
+            >
               Email
             </Typography>
             <TextField
               id="email"
               name="email"
               type="email"
+              value={formData.email}
+              onChange={handleChange}
               placeholder="Enter Email"
               fullWidth
               variant="outlined"
@@ -56,13 +116,19 @@ const Login = () => {
             />
           </Box>
           <Box mb={3}>
-            <Typography variant="body1" fontWeight="bold" sx={{ color: "#fff", mb: 1 }}>
+            <Typography
+              variant="body1"
+              fontWeight="bold"
+              sx={{ color: "#fff", mb: 1 }}
+            >
               Password
             </Typography>
             <TextField
               id="password"
               name="password"
               type="password"
+              value={formData.password}
+              onChange={handleChange}
               placeholder="Enter Password"
               fullWidth
               variant="outlined"
@@ -76,6 +142,7 @@ const Login = () => {
             variant="contained"
             color="primary"
             fullWidth
+            disabled={loading}
             sx={{
               height: 40,
               backgroundColor: "#2196f3",
@@ -84,9 +151,25 @@ const Login = () => {
               },
             }}
           >
-            Login
+            {loading ? "Logging in..." : "Login"}
           </Button>
         </Box>
+        <br/>
+        <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            fullWidth
+            disabled={loading}
+            sx={{
+              height: 40,
+              background: 'linear-gradient(to right, #FF4081, #FF5722)',
+        '&:hover': {
+          background: 'linear-gradient(to right, #F50057, #FF3D00)',
+        },
+            }}
+          >
+        <OAuth/></Button>
         <Divider sx={{ my: 3, backgroundColor: "#fff" }} />
         <Typography
           variant="body2"
@@ -95,7 +178,7 @@ const Login = () => {
         >
           New to CouponDeal?{" "}
           <Link
-            to="/Signup"
+            to="/signup"
             style={{
               fontWeight: "bold",
               color: "#fff",

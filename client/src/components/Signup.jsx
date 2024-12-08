@@ -1,16 +1,75 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Box,
   Typography,
   TextField,
   Button,
   Divider,
+  CircularProgress,
+  Alert,
 } from "@mui/material";
 
 function Signup() {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    // confirmPassword: "",
+  });
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Frontend validation
+    if (
+      !formData.name ||
+      !formData.email ||
+      !formData.password 
+      // !formData.confirmPassword
+    ) {
+      return setErrorMessage("All fields are required.");
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      return setErrorMessage("Passwords do not match.");
+    }
+
+    try {
+      setLoading(true);
+      setErrorMessage(null);
+
+      const res = await fetch("http://localhost:3000/api/user/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setLoading(false);
+        return setErrorMessage(data.message || "Signup failed. Please try again.");
+      }
+
+      // Navigate to sign-in page on success
+      navigate("/Signin");
+    } catch (error) {
+      setErrorMessage("An unexpected error occurred. Please try again.");
+      setLoading(false);
+    }
+  };
+
   return (
-    <Box mt={12} 
+    <Box
+      mt={12}
       mb={5}
       sx={{
         pt: 1,
@@ -22,6 +81,7 @@ function Signup() {
     >
       <Box
         component="form"
+        onSubmit={handleSubmit}
         sx={{
           background: "linear-gradient(to top left, cyan, green)",
           p: 4,
@@ -41,6 +101,13 @@ function Signup() {
         >
           SIGN UP
         </Typography>
+
+        {errorMessage && (
+          <Alert severity="error" sx={{ mb: 2 }}>
+            {errorMessage}
+          </Alert>
+        )}
+
         <Box mb={2}>
           <Typography
             component="label"
@@ -51,7 +118,8 @@ function Signup() {
           </Typography>
           <TextField
             id="name"
-            name="name"
+            value={formData.name}
+            onChange={handleChange}
             type="text"
             placeholder="Enter Your Name"
             fullWidth
@@ -62,6 +130,7 @@ function Signup() {
             }}
           />
         </Box>
+
         <Box mb={2}>
           <Typography
             component="label"
@@ -72,7 +141,8 @@ function Signup() {
           </Typography>
           <TextField
             id="email"
-            name="email"
+            value={formData.email}
+            onChange={handleChange}
             type="email"
             placeholder="Enter Email"
             fullWidth
@@ -83,6 +153,7 @@ function Signup() {
             }}
           />
         </Box>
+
         <Box mb={2}>
           <Typography
             component="label"
@@ -93,7 +164,8 @@ function Signup() {
           </Typography>
           <TextField
             id="password"
-            name="password"
+            value={formData.password}
+            onChange={handleChange}
             type="password"
             placeholder="Enter Password"
             fullWidth
@@ -104,17 +176,19 @@ function Signup() {
             }}
           />
         </Box>
+
         <Box mb={3}>
           <Typography
             component="label"
-            htmlFor="confirmpassword"
+            htmlFor="confirmPassword"
             sx={{ color: "white", fontWeight: "bold", mb: 1, display: "block" }}
           >
             Confirm Password
           </Typography>
           <TextField
-            id="confirmpassword"
-            name="confirmpassword"
+            id="confirmPassword"
+            value={formData.confirmPassword}
+            onChange={handleChange}
             type="password"
             placeholder="Confirm Password"
             fullWidth
@@ -125,9 +199,11 @@ function Signup() {
             }}
           />
         </Box>
+
         <Button
           type="submit"
           fullWidth
+          disabled={loading}
           sx={{
             backgroundColor: "#1e88e5",
             color: "white",
@@ -137,9 +213,11 @@ function Signup() {
             "&:hover": { backgroundColor: "#1565c0" },
           }}
         >
-          Sign Up
+          {loading ? <CircularProgress size={24} sx={{ color: "white" }} /> : "Sign Up"}
         </Button>
+
         <Divider sx={{ my: 3, backgroundColor: "rgba(255,255,255,0.5)" }} />
+
         <Typography
           variant="body1"
           textAlign="center"

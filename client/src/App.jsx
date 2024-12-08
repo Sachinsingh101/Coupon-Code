@@ -1,17 +1,18 @@
 import Header from "./components/Header.jsx";
 import Bottom from "./components/Bottom.jsx";
 import Home from './components/Home.jsx';
-import Notfound from './components/Notfound.jsx'
-import { BrowserRouter, Routes, Route, Router } from "react-router-dom";
+import {Routes, Route} from "react-router-dom";
 import NotFound from "./components/Notfound.jsx";
 import Sellcoupons from "./components/Sellcoupons.jsx";
 import Account from './components/Account.jsx';
 import Signup from "./components/Signup.jsx";
 import Login from "./components/Signin.jsx";
+import AboutSlider from "./components/AboutSlider.jsx";
+import Earn from './components/Earn.jsx';
 function App() {
   return (
     <>
-      <Header />
+        <Header />
         <Routes>
           <Route path="/">
             <Route index element={<Home />} />
@@ -20,10 +21,13 @@ function App() {
             <Route path="Account" element={<Account />} />
             <Route path="Signup" element={<Signup />} />
             <Route path="Signin" element={<Login />} />
+            <Route path="About" element={<AboutSlider />} />
+            <Route path="Earn" element={<Earn /> } />
            </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
-      <Bottom />
+      <Bottom /> 
+
     </>
   );
 }
